@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\Position;
-use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
@@ -28,8 +29,8 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        $data = Position::all();
-        return view('employee.create')->with('positions', $data);
+        $positions = Position::pluck('name','id');
+        return view('employee.create', compact('positions'));
     }
 
     /**
@@ -40,42 +41,12 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        Session::flash('nama', $request->nama);
-        Session::flash('nip', $request->nip);
-        Session::flash('jabatan', $request->jabatan);
-        Session::flash('nomor_telpon', $request->nomor_telpon);
-        Session::flash('departemen', $request->departemen);
-        Session::flash('tanggal_lahir', $request->tanggal_lahir);
-        Session::flash('tahun_lahir', $request->tahun_lahir);
-        Session::flash('alamat', $request->alamat);
-        Session::flash('agama', $request->agama);
-        Session::flash('status', $request->status);
+        $validator = Validator::make($request->all(), Employee::$rules);
 
-        $request->validate([
-            'nama' => 'required',
-            'nip' => 'required|unique:employees',
-            'nomor_telpon' => 'required|numeric',
-            'tanggal_lahir' => 'required',
-            'departemen' => 'required',
-            'tahun_lahir' => 'required|numeric',
-            'alamat' => 'required',
-            'agama' => 'required',
-            'foto' => 'required|mimes:png,jpg,jpeg,gif'
-        ], [
-            'nama.required' => 'Nama Karyawan harus diisi',
-            'nip.required' => 'Nip Karyawan harus diisi',
-            'nip.unique' => 'Nip Karyawan sudah ada',
-            'nomor_telpon.required' => 'Nomor Telpon Karyawan harus diisi',
-            'nomor_telpon.numeric' => 'Nomor Telpon Karyawan harus berupa angka',
-            'tanggal_lahir.required' => 'Tanggal Lahir Karyawan harus diisi',
-            'tahun_lahir.required' => 'Tahun Lahir Karyawan harus diisi',
-            'tahun_lahir.numeric' => 'Tahun Lahir Karyawan harus berupa angka',
-            'alamat.required' => 'Alamat Karyawan harus diisi',
-            'departemen.required' => 'Departemen Karyawan harus diisi',
-            'agama.required' => 'Agama Karyawan harus diisi',
-            'foto.required' => 'Silahkan masukkan foto',
-            'foto.mimes' => 'Foto harus berekstensi JPG, JPEG, PNG, dan GIF'
-        ]);
+        if ($validator->fails()) {
+            $validator->validate();
+            return view('employee.create')->withErrors($validator)->withInput();
+        }
 
         $foto_file = $request->file('foto');
         $foto_ekstensi = $foto_file->extension();
@@ -152,7 +123,7 @@ class EmployeeController extends Controller
 
         $request->validate([
             'nama' => 'required',
-            'nip' => 'required|unique:employees',
+            'nip' => 'required',
             'nomor_telpon' => 'required|numeric',
             'tanggal_lahir' => 'required',
             'departemen' => 'required',
@@ -162,7 +133,6 @@ class EmployeeController extends Controller
         ], [
             'nama.required' => 'Nama Karyawan harus diisi',
             'nip.required' => 'Nip Karyawan harus diisi',
-            'nip.unique' => 'Nip Karyawan sudah ada',
             'nomor_telpon.required' => 'Nomor Telpon Karyawan harus diisi',
             'nomor_telpon.numeric' => 'Nomor Telpon Karyawan harus berupa angka',
             'tanggal_lahir.required' => 'Tanggal Lahir Karyawan harus diisi',
@@ -205,7 +175,7 @@ class EmployeeController extends Controller
 
         $employee = Employee::where('id', $id)->update($data);
         if ($employee) {
-            Session::flash('success', 'Data berhasil ditambahkan.');
+            Session::flash('success', 'Data berhasil diubah.');
         } else {
             Session::forget('success');
         }
@@ -234,11 +204,29 @@ class EmployeeController extends Controller
         return redirect(route('employee.index'));
     }
 
-    function status(String $id)
+    public function aktifkan($id)
     {
-        $data = Employee::find($id);
-        if ($data->status == '1') {
-            Employee::where('id', $id)->update('status',);
+        $employee = Employee::find($id);
+        if (!$employee) {
+            return redirect()->back()->with('error', 'Karyawan tidak ditemukan.');
         }
+
+        $employee->status = 1; // Set status menjadi Aktif (sesuaikan dengan nilai status Anda)
+        $employee->save();
+
+        return redirect()->back()->with('success', 'Karyawan berhasil diaktifkan.');
+    }
+
+    public function nonaktifkan($id)
+    {
+        $employee = Employee::find($id);
+        if (!$employee) {
+            return redirect()->back()->with('error', 'Karyawan tidak ditemukan.');
+        }
+
+        $employee->status = 2; // Set status menjadi Tidak Aktif (sesuaikan dengan nilai status Anda)
+        $employee->save();
+
+        return redirect()->back()->with('success', 'Karyawan berhasil dinonaktifkan.');
     }
 }

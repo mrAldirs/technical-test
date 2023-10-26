@@ -26,3 +26,5 @@ Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 Route::resource('position', PositionController::class)->middleware('auth');
 Route::resource('employee', EmployeeController::class)->middleware('auth');
+Route::get('/aktifkan/{id}', [EmployeeController::class, 'aktifkan'])->name('aktifkan.employee');
+Route::get('/nonaktifkan/{id}', [EmployeeController::class, 'nonaktifkan'])->name('nonaktifkan.employee');

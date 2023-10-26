@@ -4,83 +4,62 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-4 text-center">
-                                @if ($dataEmployee->foto)
-                                    <img src="{{ url('foto_ktp') . '/' . $dataEmployee->foto }}" class="mx-auto mt-3"
-                                        width="280px" height="240px">
-                                @endif
-                            </div>
-                            <div class="col-8">
-                                <form>
-                                    <fieldset>
-                                        <div class="mb-2">
-                                            <label for="nama" class="form-label">Nama Karyawan</label>
-                                            <input type="text" id="nama" class="form-control" disabled readonly
-                                                value="{{ $dataEmployee->nama }}">
-                                        </div>
-                                        <div class="mb-2">
-                                            <label for="nip" class="form-label">Nip Karyawan</label>
-                                            <input type="text" id="nip" class="form-control" disabled readonly
-                                                value="{{ $dataEmployee->nip }}">
-                                        </div>
-                                        <div class="mb-2">
-                                            <label for="position" class="form-label">Posisi Karyawan</label>
-                                            <input type="text" id="position" class="form-control" disabled readonly
-                                                value="{{ $dataEmployee->position->name }}">
-                                        </div>
-                                        <div class="mb-2">
-                                            <label for="nomor_telpon" class="form-label">Nomor Telepon Karyawan</label>
-                                            <input type="text" id="nomor_telpon" class="form-control" disabled readonly
-                                                value="{{ $dataEmployee->nomor_telpon }}">
-                                        </div>
-                                    </fieldset>
-                                </form>
-                            </div>
+                <div class="container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-center">Detail Karyawan</h3>
                         </div>
-                        <div class="mt-2">
-                            <form>
-                                <fieldset>
-                                    <div class="mb-2">
-                                        <label for="departemen" class="form-label">Departemen Karyawan</label>
-                                        <input type="text" id="departemen" class="form-control" disabled readonly
-                                            value="{{ $dataEmployee->departemen }}">
-                                    </div>
-                                    <div class="mb-2">
-                                        <label for="tanggal_lahir" class="form-label">Tanggal Lahir Karyawan</label>
-                                        <input type="text" id="tanggal_lahir" class="form-control" disabled readonly
-                                            value="{{ $dataEmployee->tanggal_lahir }}">
-                                    </div>
-                                    <div class="mb-2">
-                                        <label for="tahun_lahir" class="form-label">Tahun Lahir Karyawan</label>
-                                        <input type="text" id="tahun_lahir" class="form-control" disabled readonly
-                                            value="{{ $dataEmployee->tahun_lahir }}">
-                                    </div>
-                                    <div class="mb-2">
-                                        <label for="alamat" class="form-label">Alamat</label>
-                                        <textarea id="alamat" cols="30" rows="2" class="form-control" disabled readonly>{{ $dataEmployee->alamat }}</textarea>
-                                    </div>
-                                </fieldset>
-                            </form>
-                            <p><strong>Status :</strong>{{ $dataEmployee->status }}</p>
-                            <p><strong>Dibuat pada :</strong>{{ $dataEmployee->created_at }}</p>
-                            <p><strong>Diedit pada :</strong>{{ $dataEmployee->updated_at }}</p>
-                        </div>
-                        <div class="m-3">
-                            <a href="{{ route('employee.index') }}" class="btn btn-secondary">Kembali ke
-                                Halaman Sebelumnya</a>
-                            {{-- <form class="d-inline" method="post" action="{{ route('employee.status', [$employee->id]) }}">
-                                @csrf
-                                @method('PUT')
-                                @if ($dataEmployee->status == '1')
-                                    <button type="submit" class="btn btn-primary float-right px-2">Nonaktifkan
-                                        Status</button>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <strong>Nama</strong><br>
+                                    <strong>NIP</strong><br>
+                                    <strong>Posisi</strong><br>
+                                    <strong>Departemen</strong><br>
+                                    <strong>Tanggal Lahir</strong><br>
+                                    <strong>Tahun Lahir</strong><br>
+                                    <strong>Alamat</strong><br>
+                                    <strong>Nomor Telepon</strong><br>
+                                    <strong>Agama</strong><br>
+                                </div>
+                                <div class="col-sm-9">
+                                    : {{ $dataEmployee->nama }}<br>
+                                    : {{ $dataEmployee->nip }}<br>
+                                    : {{ $dataEmployee->position->name }}<br>
+                                    : {{ $dataEmployee->departemen }}<br>
+                                    : {{ $dataEmployee->tanggal_lahir }}<br>
+                                    : {{ $dataEmployee->tahun_lahir }}<br>
+                                    : {{ $dataEmployee->alamat }}<br>
+                                    : {{ $dataEmployee->nomor_telpon }}<br>
+                                    : {{ $dataEmployee->agama }}<br>
+                                </div>
+                            </div>
+                            <div class="text-center mt-3">
+                                <strong>Foto KTP</strong><br>
+                                <img src="{{ url('foto_ktp') . '/' . $dataEmployee->foto }}" alt="Foto KTP" width="400">
+                            </div>
+                            <p class="text-center mt-3"><strong>Status:</strong>
+                                @if ($dataEmployee->status == 1)
+                                    Aktif
+                                @elseif($dataEmployee->status == 2)
+                                    Tidak Aktif
                                 @else
-                                    <button type="submit" class="btn btn-primary float-right px-2">Aktifkan Status</button>
+                                    Status Tidak Diketahui
                                 @endif
-                            </form> --}}
+                            </p>
+                            <p class="text-center"><strong>Dibuat pada:</strong> {{ $dataEmployee->created_at }}</p>
+                            <p class="text-center"><strong>Diedit pada:</strong> {{ $dataEmployee->updated_at }}</p>
+                            <div class="row float-right mr-lg-5">
+                                @if ($dataEmployee->status == 1)
+                                    <button class="btn btn-warning btn-sm" data-toggle="modal"
+                                        data-target="#nonaktifkanModal">Nonaktifkan</button>
+                                @elseif($dataEmployee->status == 2)
+                                    <button class="btn btn-success btn-sm" data-toggle="modal"
+                                        data-target="#aktifkanModal">Aktifkan</button>
+                                @else
+                                    Status Tidak Diketahui
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -88,3 +67,47 @@
         </div>
     </div>
 @endsection
+<!-- Modal untuk Nonaktifkan -->
+<div class="modal fade" id="nonaktifkanModal" tabindex="-1" role="dialog" aria-labelledby="nonaktifkanModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nonaktifkanModalLabel">Nonaktifkan Karyawan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Apakah Anda yakin ingin nonaktifkan karyawan ini?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <a href="{{ route('nonaktifkan.employee', $dataEmployee->id) }}"
+                    class="btn btn-warning">Nonaktifkan</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal untuk Aktifkan -->
+<div class="modal fade" id="aktifkanModal" tabindex="-1" role="dialog" aria-labelledby="aktifkanModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aktifkanModalLabel">Aktifkan Karyawan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Apakah Anda yakin ingin mengaktifkan karyawan ini?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <a href="{{ route('aktifkan.employee', $dataEmployee->id) }}" class="btn btn-success">Aktifkan</a>
+            </div>
+        </div>
+    </div>
+</div>

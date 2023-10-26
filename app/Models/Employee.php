@@ -24,6 +24,23 @@ class Employee extends Model
     ];
 
     /**
+     * Validation rules
+     *
+     * @var array
+     */
+    public static $rules = [
+        'nama' => 'required',
+        'nip' => 'required|unique:employees',
+        'nomor_telpon' => 'required|numeric',
+        'tanggal_lahir' => 'required',
+        'departemen' => 'required',
+        'tahun_lahir' => 'required|numeric',
+        'alamat' => 'required',
+        'agama' => 'required',
+        'foto' => 'required|mimes:png,jpg,jpeg,gif'
+    ];
+
+    /**
      * Get the position that owns the Employee
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

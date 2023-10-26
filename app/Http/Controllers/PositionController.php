@@ -20,7 +20,7 @@ class PositionController extends Controller
                 ->addIndexColumn()
                 ->toJson();
         }
-        return view('position');
+        return view('position.position');
     }
 
     /**

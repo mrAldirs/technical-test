@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Position extends Model
 {
     use HasFactory;
+    protected $table = 'positions';
     protected $fillable = [
         'name'
     ];
@@ -17,8 +18,8 @@ class Position extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function employee()
+    public function employees()
     {
-        return $this->hasMany(Position::class, 'position_id', 'id');
+        return $this->hasMany(Employee::class, 'position_id', 'id');
     }
 }

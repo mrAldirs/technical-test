@@ -40,8 +40,7 @@
                                         <select class="form-control" aria-label="position_id" name="position_id"
                                             id="position_id">
                                             @foreach ($positions as $position)
-                                                <option value="{{ $dataEmployee->position->id }}">{{ $position->name }}
-                                                </option>
+                                                <option value="{{ $position->id }}">{{ $position->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>

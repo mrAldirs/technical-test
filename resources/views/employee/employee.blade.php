@@ -1,5 +1,17 @@
 @extends('layout.app')
 
+@section('css')
+    <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+@endsection
+@section('breadcrumb')
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Karyawan</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Karyawan</li>
+        </ol>
+    </div>
+@endsection
 @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -68,3 +80,25 @@
         </div>
     </div>
 @endsection
+
+@push('js')
+    <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script>
+        $('#dataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('employee.index') }}",
+            columns: [{
+                    data: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false,
+                    className: "text-center"
+                },
+                {
+                    data: 'name'
+                }
+            ]
+        })
+    </script>
+@endpush
